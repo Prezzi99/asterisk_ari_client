@@ -9,6 +9,8 @@ export default function TeamMembersTable() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
 
+  const api_url = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -26,7 +28,7 @@ export default function TeamMembersTable() {
   }, []);
 
   async function fetchSheet(id) {
-    const response = await fetch(`https://localhost:8080/sheets/${id}`, { credentials: 'include' });
+    const response = await fetch(`${api_url}/sheets/${id}`, { credentials: 'include' });
 
     if (response.status == 401) {
       return navigate('/login')

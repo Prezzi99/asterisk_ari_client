@@ -13,6 +13,8 @@ export default function UsersComponent() {
   const [deletedUsers, setDeletedUsers] = useState([]);
   const [users, setUsers] = useState([]);
 
+  const api_url = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
@@ -25,7 +27,7 @@ export default function UsersComponent() {
 
   useEffect(() => {
     const fetchAgents = async () => {
-      const response = await fetch('https://localhost:8080/agents', { credentials: 'include' });
+      const response = await fetch(`${api_url}/agents`, { credentials: 'include' });
 
       if (response.status == 401) {
         return navigate('/login')
@@ -40,7 +42,7 @@ export default function UsersComponent() {
   const sendPutRequest = (id, agent) => {
     agent.phone_number = agent.phone_number.replaceAll(/\D/g, '');
 
-    fetch(`https://localhost:8080/agents/${id}`, { 
+    fetch(`${api_url}/agents/${id}`, { 
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -52,10 +54,10 @@ export default function UsersComponent() {
 
   const sendDeleteRequest = (ids) => {
     if (ids.length === 1) {
-      fetch(`https://localhost:8080/agents/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
+      fetch(`${api_url}/agents/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
     }
     else {
-      fetch('https://localhost:8080/agents', { 
+      fetch(`${api_url}/agents`, { 
         method: 'DELETE', 
         credentials: 'include',
         headers: {

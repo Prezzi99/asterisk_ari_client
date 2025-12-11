@@ -9,6 +9,8 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
 
+  const api_url = import.meta.env.VITE_API_URL;
+
   const navigate = useNavigate();
 
   const login = () => {
@@ -18,7 +20,7 @@ export default function Login() {
     setIsLoading(true);
     setShowError(false);
 
-    fetch('https://localhost:8080/auth/login', {
+    fetch(`${api_url}/auth/login`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'

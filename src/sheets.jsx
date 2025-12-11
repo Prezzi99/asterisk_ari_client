@@ -13,6 +13,7 @@ export default function Sheets() {
   const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();
+  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const checkMobile = () => {
@@ -26,7 +27,7 @@ export default function Sheets() {
 
   useEffect(() => {
     const fetchSheets = async () => {
-      const response = await fetch('https://localhost:8080/sheets', { credentials: 'include' });
+      const response = await fetch(`${api_url}/sheets`, { credentials: 'include' });
 
       if (response.status == 401) {
         return navigate('/login')
@@ -40,10 +41,10 @@ export default function Sheets() {
 
   const sendDeleteRequest = (ids) => {
     if (ids.length === 1) {
-      fetch(`https://localhost:8080/sheets/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
+      fetch(`${api_url}/sheets/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
     }
     else {
-      fetch('https://localhost:8080/sheets', { 
+      fetch(`${api_url}/sheets`, { 
         method: 'DELETE', 
         credentials: 'include',
         headers: {

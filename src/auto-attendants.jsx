@@ -14,6 +14,7 @@ export default function AutoAttendants() {
   const [loadingId, setLoadingId] = useState(null);
   const audioRef = useRef(null);
 
+  const api_url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate()
 
   // TODO: Set to empty array
@@ -48,7 +49,7 @@ export default function AutoAttendants() {
   // TODO: Fetch all auto-attendants (scripts) titles
   useEffect(() => {
     const fetchScripts = async () => {
-      const response = await fetch('https://localhost:8080/scripts', { credentials: 'include' });
+      const response = await fetch(`${api_url}/scripts`, { credentials: 'include' });
 
       if (response.status == 401) {
         return navigate('/login')
@@ -71,10 +72,10 @@ export default function AutoAttendants() {
 
   const sendDeleteRequest = (ids) => {
     if (ids.length === 1) {
-      fetch(`https://localhost:8080/scripts/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
+      fetch(`${api_url}/scripts/${ids[0]}`, { method: 'DELETE', credentials: 'include'});
     }
     else {
-      fetch('https://localhost:8080/scripts', { 
+      fetch(`${api_url}/scripts`, { 
         method: 'DELETE', 
         credentials: 'include',
         headers: {
@@ -470,7 +471,7 @@ export default function AutoAttendants() {
                     textAlign: 'right',
                   }}>
                     <button
-                      onClick={() => handlePlayAudio(user.id, 'https://localhost:8080/scripts/')}
+                      onClick={() => handlePlayAudio(user.id, `${api_url}/scripts/`)}
                       disabled={loadingId === user.id}
                       style={{
                         color: 'rgb(217, 119, 87)',

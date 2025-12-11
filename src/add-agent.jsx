@@ -9,6 +9,8 @@ export default function LeadUploadForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const api_url = import.meta.env.VITE_API_URL;
+
   const formatPhoneNumber = (value) => {
     const digits = value.replace(/\D/g, '');
     
@@ -45,7 +47,7 @@ export default function LeadUploadForm() {
     setIsLoading(true);
     setErrorMessage('');
 
-    fetch('https://localhost:8080/agents/add', {
+    fetch(`${api_url}/agents/add`, {
       method: 'POST',
       credentials: 'include',
       headers: {

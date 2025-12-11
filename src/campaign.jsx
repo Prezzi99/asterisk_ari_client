@@ -25,6 +25,8 @@ export default function TeamMembersTable() {
   const navigate = useNavigate()
   const location = useLocation();
 
+  const api_url = import.meta.env.VITE_API_URL;
+
   // useEffect(() => {
   //   if (isStarted && highlightedRowRef.current) {
   //     highlightedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -38,7 +40,7 @@ export default function TeamMembersTable() {
 
   useEffect(() => {
     const getResources = async () => {
-      const response = await fetch('https://localhost:8080/resources', { credentials: 'include' });
+      const response = await fetch(`${api_url}/resources`, { credentials: 'include' });
      
       if (response.status == 401) {
         return navigate('/login')
@@ -140,7 +142,7 @@ export default function TeamMembersTable() {
       return
     }
 
-    const response = await fetch(`https://localhost:8080/sheets/${id}`, { credentials: 'include' });
+    const response = await fetch(`${api_url}/sheets/${id}`, { credentials: 'include' });
 
     if (response.status == 401) {
       return navigate('/login')
@@ -239,7 +241,7 @@ export default function TeamMembersTable() {
       window.socket.onopen = async () => {
         console.log('You are connected.');
 
-        fetch(`https://localhost:8080/dialer/start`, { 
+        fetch(`${api_url}/dialer/start`, { 
           credentials: 'include',
           method: 'POST',
           headers: {
@@ -257,7 +259,7 @@ export default function TeamMembersTable() {
     }
     else {
       console.log('Already connected, fetching...............');
-      fetch(`https://localhost:8080/dialer/start`, { 
+      fetch(`${api_url}/dialer/start`, { 
         credentials: 'include',
         method: 'POST',
         headers: {
@@ -296,7 +298,7 @@ export default function TeamMembersTable() {
 
     setShowStopConfirm(false);
 
-    fetch('https://localhost:8080/dialer/stop', {method: 'POST', credentials: 'include'});
+    fetch(`${api_url}/dialer/stop`, {method: 'POST', credentials: 'include'});
   };
 
   const cancelStop = () => {
@@ -683,7 +685,7 @@ export default function TeamMembersTable() {
             onClick={() => {
               // console.log('isPaused was', isPaused)
 
-              fetch('https://localhost:8080/dialer/toggle', { credentials: 'include', method: 'POST'});
+              fetch(`${api_url}/dialer/toggle`, { credentials: 'include', method: 'POST'});
 
               if (isPaused) {
                 // console.log('The dialer is paused... Resuming now!')

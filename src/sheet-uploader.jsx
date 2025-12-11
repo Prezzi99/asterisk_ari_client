@@ -10,6 +10,7 @@ export default function LeadUploadForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
+  const api_url = import.meta.env.VITE_API_URL;
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -51,7 +52,7 @@ export default function LeadUploadForm() {
     setIsLoading(true);
     setErrorMessage('');
 
-    fetch('https://localhost:8080/sheets/upload', {
+    fetch(`${api_url}/sheets/upload`, {
         method: 'POST',
         credentials: 'include',
         body: payload,
