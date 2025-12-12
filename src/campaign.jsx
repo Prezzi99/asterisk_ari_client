@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { useBlocker } from 'react-router-dom';
 
 export default function TeamMembersTable() {
   const [sheetTitles, setSheetTitles] = useState([]);
@@ -18,13 +19,14 @@ export default function TeamMembersTable() {
   const [didId, setDidId] = useState('');
   const [scriptId, setScriptId] = useState('');
   const [showStopConfirm, setShowStopConfirm] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [scrollTo, setScrollTo] = useState('');
   const [nextLead, setNextLead] = useState('');
   const highlightedRowRef = useRef(null);
   const navigate = useNavigate()
   const location = useLocation();
-
+  const blocker = useBlocker(true);
   const api_url = import.meta.env.VITE_API_URL;
 
   // useEffect(() => {
@@ -32,6 +34,11 @@ export default function TeamMembersTable() {
   //     highlightedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
   //   }
   // }, [isStarted]);
+
+  useEffect(() => {
+    if (blocker.state == 'blocked') handleNavigation(blocker.location);
+  }, [blocker])
+
   useEffect(() => {
     if (isStarted && highlightedRowRef.current) {
       highlightedRowRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -134,6 +141,15 @@ export default function TeamMembersTable() {
     }
     handleResize()
   }, []);
+
+  async function handleNavigation(next_location) {
+    if (isPaused === true && location?.pathname == '/') {
+      blocker.proceed();
+    }
+    else {
+      handleExitAttempt();
+    }
+  }
 
   async function fetchSheet(id, call_status_report, campaign_start) {
     if (!id) {
@@ -305,6 +321,15 @@ export default function TeamMembersTable() {
     setShowStopConfirm(false);
   };
 
+  const confirmExit = () => {
+    if (!isPaused) fetch(`${api_url}/dialer/toggle`, { credentials: 'include', method: 'POST'});
+    blocker.proceed();
+  }
+
+  const handleExitAttempt = () => setShowExitConfirm(true);
+
+  const cancelExit = () => setShowExitConfirm(false);
+
   const getStatusStyle = (status) => {
     switch(status) {
       case 'answered':
@@ -392,6 +417,42 @@ export default function TeamMembersTable() {
                 onMouseOut={(e) => e.target.style.opacity = '1'}
               >
                 Stop Campaign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exit Confirmation Dialog */}
+      {showExitConfirm && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="rounded-xl p-6 max-w-md w-full mx-4 border" style={{
+            background: 'rgba(255, 255, 255, 0.02)',
+            backdropFilter: 'blur(10px)',
+            borderColor: 'rgba(255, 255, 255, 0.1)'
+          }}>
+            <h3 className="text-white text-lg font-semibold mb-3" style={{letterSpacing: '-0.01em'}}>Leave Page?</h3>
+            <p className="text-sm mb-6" style={{color: '#a1a1aa'}}>
+              Are you sure you want to leave this page? Your campaign will be paused.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelExit}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
+                style={{background: 'rgba(255, 255, 255, 0.06)'}}
+                onMouseOver={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.08)'}
+                onMouseOut={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.06)'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmExit}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
+                style={{ backgroundColor: 'rgb(217, 119, 87)' }}
+                onMouseOver={(e) => e.target.style.opacity = '0.9'}
+                onMouseOut={(e) => e.target.style.opacity = '1'}
+              >
+                Continue
               </button>
             </div>
           </div>
